@@ -1,0 +1,8 @@
+[package]
+name = "sigmaos-archmanweb"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Manual pages repository backend — SigmaOS component inspired by Arch Linux infrastructure."
+
+[dependencies]
