@@ -3,7 +3,7 @@ name = "SigmaOS-archmanweb"
 tier = 2
 stability = "scaffold"
 language = "rust"
-description = "archmanweb component"
+description = "SigmaOS archmanweb component (Arch Linux inspired)"
 upstream = []
 
 [contract]
