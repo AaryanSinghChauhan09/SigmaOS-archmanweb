@@ -1,54 +1,23 @@
-//! SigmaOS archmanweb component
+//! SigmaOS archmanweb component.
+//!
+//! Rust implementation of `archlinux/archmanweb`: the Arch Linux man pages
+//! repository — indexes man pages shipped by official packages and serves
+//! them with search.
+//!
+//! Upstream is a Django app (`archmanweb/`) that reads pacman syncdb +
+//! files dbs, extracts `usr/share/man/**` entries, runs `mandoc` for HTML,
+//! and provides search. This port implements the indexing + search core;
+//! HTML rendering stays with the caller (or `mandoc` CLI).
+
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
 
-use thiserror::Error;
+pub mod error;
+pub mod manpage;
+pub mod model;
+pub mod search;
 
-/// Error types for this component.
-#[derive(Debug, Error)]
-pub enum ComponentError {
-    /// Not initialised.
-    #[error("component not initialised")]
-    NotInitialised,
-    /// Unsupported operation.
-    #[error("unsupported: {0}")]
-    Unsupported(&'static str),
-}
-
-/// Result alias.
-pub type ComponentResult<T> = Result<T, ComponentError>;
-
-/// Component handle.
-#[derive(Debug, Default, Clone)]
-pub struct Component { initialised: bool }
-
-impl Component {
-    /// Create uninitialised component.
-    pub fn new() -> Self { Self::default() }
-    /// Initialise.
-    pub fn init(&mut self) -> ComponentResult<()> { self.initialised = true; Ok(()) }
-    /// Is ready?
-    pub fn is_ready(&self) -> bool { self.initialised }
-    /// Run.
-    pub fn run(&self) -> ComponentResult<()> {
-        if !self.initialised { return Err(ComponentError::NotInitialised); }
-        Ok(())
-    }
-    /// Reset.
-    pub fn reset(&mut self) { self.initialised = false; }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn test_new_not_ready() { assert!(!Component::new().is_ready()); }
-    #[test]
-    fn test_init_ok() { let mut c = Component::new(); c.init().unwrap(); assert!(c.is_ready()); }
-    #[test]
-    fn test_run_before_init_err() { assert!(Component::new().run().is_err()); }
-    #[test]
-    fn test_run_after_init_ok() { let mut c = Component::new(); c.init().unwrap(); assert!(c.run().is_ok()); }
-    #[test]
-    fn test_reset() { let mut c = Component::new(); c.init().unwrap(); c.reset(); assert!(!c.is_ready()); }
-}
+pub use error::ManwebError;
+pub use manpage::{ManPage, ManSection, parse_man_filename};
+pub use model::{ContentEntry, Index, Package, build_index};
+pub use search::{SearchHit, search};

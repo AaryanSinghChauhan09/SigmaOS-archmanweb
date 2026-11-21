@@ -1,16 +1,16 @@
 [component]
 name = "SigmaOS-archmanweb"
 tier = 2
-stability = "scaffold"
+stability = "beta"
 language = "rust"
 description = "SigmaOS archmanweb component (Arch Linux inspired)"
-upstream = []
+upstream = ["https://github.com/archlinux/archmanweb"]
 
 [contract]
-provides = ["component"]
+provides = ["man-index", "man-search", "pkg-man-mapping"]
 depends_on = []
 
 [maturity]
 status = "Implemented"
-test_evidence = "Compiles and passes AAA unit tests"
+test_evidence = "cargo test: 9 tests pass (man filename parse, index build, search)"
 next_milestone = "Hardware and runtime integration"
